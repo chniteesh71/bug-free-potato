@@ -4,7 +4,7 @@ FROM node:22-alpine3.21
 WORKDIR /app
 
 # Copy package.json & package-lock.json first (for caching)
-COPY package*.json ./
+COPY ./src/package*.json ./
 
 # Install dependencies
 RUN npm ci --only=production
