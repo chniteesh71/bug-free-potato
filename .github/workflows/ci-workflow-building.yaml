@@ -14,15 +14,11 @@ jobs:
          uses: actions/setup-node@v5
          with:
            node-version: '22'
-       - name: Get npm cache directory
-         id: npm-cache-dir
-         shell: bash
-         run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
        - name: cache dependencies
          id: cache-deps
          uses: actions/cache@v4
          with:
-            path: ${{ steps.npm-cache-dir.outputs.dir }}
+            path: ./src/node_modules
             key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
             restore-keys: |
                ${{ runner.os }}-node-
