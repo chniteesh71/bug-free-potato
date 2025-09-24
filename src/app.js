@@ -9,7 +9,7 @@ app.get('/api/message', (req, res) => {
   res.json({ msg: 'Welcome! Niteesh CH🎉' });
 });
 
-const helloRoute = require('./routes/hello');
+const helloRoute = require('./routes/hello.js');
 app.use('/hello', helloRoute); // Mount /hello route
 
 module.exports = app;
