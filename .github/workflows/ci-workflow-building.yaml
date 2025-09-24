@@ -1,0 +1,39 @@
+name: workflow-for-node-app
+on:
+   push:
+      branches:
+        - main
+   workflow_dispatch:
+jobs:
+   job1-testing:
+     runs-on: ubuntu-latest
+     steps:
+       - name: checkout the code
+         uses: actions/checkout@v5
+       - name: setup the Node environment
+         uses: actions/setup-node@v5
+         with:
+           node-version: '22'
+       - name: Get npm cache directory
+         id: npm-cache-dir
+         shell: bash
+         run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
+       - name: cache dependencies
+         id: cache-dependencies
+         uses: actions/cache@v4
+         with:
+            path: ${{ steps.npm-cache-dir.outputs.dir }}
+            key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+            restore-keys: |
+               ${{ runner.os }}-node-
+       - name: Install dependencies
+         run: npm ci
+         working-directory: ./src
+       - name: Run the linting
+         run: npm run lint
+         working-directory: ./src
+       - name: Run the tests
+         run: npm test
+         working-directory: ./src
+       
+   
