@@ -19,7 +19,7 @@ jobs:
          shell: bash
          run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
        - name: cache dependencies
-         id: cache-dependencies
+         id: cache-deps
          uses: actions/cache@v4
          with:
             path: ${{ steps.npm-cache-dir.outputs.dir }}
@@ -27,6 +27,7 @@ jobs:
             restore-keys: |
                ${{ runner.os }}-node-
        - name: Install dependencies
+         if: steps.cache-deps.outputs == 'false'
          run: npm ci
          working-directory: ./src
        - name: Run the linting
