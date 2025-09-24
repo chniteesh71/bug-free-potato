@@ -32,5 +32,31 @@ jobs:
        - name: Run the tests
          run: npm test
          working-directory: ./src
+
+   job2-builder-docker-image:
+     needs: job1-testing
+     runs-on: ubuntu-latest
+     env:
+        DOCKER_REGISTRY: docker.io
+        APP_NAME: node-sample-app
+     steps:
+        - name: checkout the code
+          uses: actions/checkout@v5
+        - name: Check Docker version
+          run: docker --version
+        - name: Log in to Docker
+          uses: docker/login-action@v3
+          with:
+            username: ${{ secrets.DOCKER_USERNAME }}
+            password: ${{ secrets.DOCKER_PASSWORD }}
+        - name: Build and Push Docker Image
+          uses: docker/build-push-action@v6
+          with:
+            context: .
+            push: true
+            tags: |
+              ${{ env.DOCKER_REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/${{ env.APP_NAME }}:latest
+              ${{ env.DOCKER_REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/${{ env.APP_NAME }}:${{ github.sha }}
+
        
    
