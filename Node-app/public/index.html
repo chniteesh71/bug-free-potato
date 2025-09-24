@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Fancy Node App</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+      font-family: 'Arial', sans-serif;
+      overflow: hidden;
+    }
+    h1 {
+      font-size: 3rem;
+      color: white;
+      animation: glow 2s infinite alternate;
+    }
+    @keyframes glow {
+      0% { text-shadow: 0 0 10px #fff; }
+      50% { text-shadow: 0 0 30px #ff0, 0 0 50px #f0f; }
+      100% { text-shadow: 0 0 10px #fff; }
+    }
+    .ball {
+      width: 50px;
+      height: 50px;
+      background: #fff;
+      border-radius: 50%;
+      position: absolute;
+      animation: float 4s infinite;
+    }
+    @keyframes float {
+      0% { transform: translateY(0px) translateX(0px); }
+      50% { transform: translateY(-200px) translateX(100px); }
+      100% { transform: translateY(0px) translateX(0px); }
+    }
+  </style>
+</head>
+<body>
+  <h1 id="title">Loading...</h1>
+
+  <div class="ball" style="left:50px; animation-delay: 0s;"></div>
+  <div class="ball" style="left:200px; animation-delay: 1s;"></div>
+  <div class="ball" style="left:350px; animation-delay: 2s;"></div>
+
+  <script>
+    fetch('/api/message')
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('title').textContent = data.msg;
+      });
+  </script>
+</body>
+</html>
