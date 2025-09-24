@@ -6,7 +6,7 @@ const app = express();
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/api/message', (req, res) => {
-  res.json({ msg: 'Welcome! Niteesh CH🎉' });
+  res.json({ msg: 'Hello... Hows it Going?' });
 });
 
 const helloRoute = require('./routes/hello.js');
