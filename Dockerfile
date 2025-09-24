@@ -1,18 +1,19 @@
 FROM node:22-alpine3.21
 
-# Set working directory
-WORKDIR .
+# Set working directory (make a dedicated folder)
+WORKDIR /app
 
-# Copy package.json & package-lock.json first (for caching)
-COPY ./src .
+# Copy package files first for caching
+COPY ./src/package*.json ./
 
 # Install dependencies
 RUN npm ci --only=production
 
-# Copy all source files
+# Copy the rest of the source code
 COPY ./src .
 
-RUN ls -l
+# Verify files exist
+RUN ls -l /app && ls -l /app/routes || true
 
 # Expose port
 EXPOSE 3000
