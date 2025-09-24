@@ -27,7 +27,6 @@ jobs:
             restore-keys: |
                ${{ runner.os }}-node-
        - name: Install dependencies
-         if: steps.cache-deps.outputs.cache-hit != 'true'
          run: npm ci
          working-directory: ./src
        - name: Run the linting
