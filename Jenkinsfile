@@ -7,18 +7,14 @@ pipeline {
         DOCKER_USER = credentials('docker-username') // Jenkins credential ID
         DOCKER_PASS = credentials('docker-password') // Jenkins credential ID
     }
+    tools {
+        nodejs 'Node24'
+    }
 
     stages {
         stage('Checkout') {
             steps {
                 checkout scm
-            }
-        }
-
-        stage('Setup Node.js') {
-            steps {
-                sh 'curl -fsSL https://deb.nodesource.com/setup_22.x | bash -'
-                sh 'apt-get install -y nodejs'
             }
         }
 
