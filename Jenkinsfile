@@ -3,10 +3,10 @@ pipeline {
 
     environment {
         DOCKER_REGISTRY = "docker.io"
+        DOCKER_USERNAME = "chniteesh71"
         APP_NAME = "node-sample-app"
-        DOCKER_USER = credentials('docker-username') // Jenkins credential ID
-        DOCKER_PASS = credentials('docker-password') // Jenkins credential ID
     }
+
     tools {
         nodejs 'Node24'
     }
@@ -42,26 +42,14 @@ pipeline {
             }
         }
 
-        stage('Docker Login') {
-            steps {
-                sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
-            }
-        }
-
         stage('Build & Push Docker Image') {
             steps {
                 script {
-                    def imageTag = "${DOCKER_REGISTRY}/${DOCKER_USER}/${APP_NAME}:${env.GIT_COMMIT}"
-                    def latestTag = "${DOCKER_REGISTRY}/${DOCKER_USER}/${APP_NAME}:latest"
-
-                    sh """
-                        docker buildx create --use || true
-                        docker buildx build \
-                          --platform linux/amd64,linux/arm64 \
-                          -t ${imageTag} \
-                          -t ${latestTag} \
-                          --push .
-                    """
+                    docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-creds') {
+                        def img = docker.build("${APP_NAME}:${env.GIT_COMMIT}", ".")
+                        img.push()
+                        img.push("latest")
+                    }
                 }
             }
         }
@@ -73,7 +61,7 @@ pipeline {
                     -v /var/run/docker.sock:/var/run/docker.sock \
                     aquasec/trivy:latest image \
                     --exit-code 1 --severity HIGH,CRITICAL \
-                    ${DOCKER_REGISTRY}/${DOCKER_USER}/${APP_NAME}:latest
+                    ${DOCKER_REGISTRY}/${DOCKER_USERNAME}/${APP_NAME}:latest
                 """
             }
         }
